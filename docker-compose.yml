@@ -13,6 +13,7 @@ services:
     volumes:
       - mysql_data:/var/lib/mysql
       - ./mysql_init/init.sql:/docker-entrypoint-initdb.d/init.sql
+    restart: on-failure
     healthcheck:
       test: ["CMD", "mysqladmin", "ping", "-h", "localhost", "-u", "root", "-pAnurag1234"]
       interval: 30s
@@ -28,6 +29,7 @@ services:
       - mynt
     volumes:
       - redis_data:/data
+    restart: on-failure
     healthcheck:
       test: ["CMD", "redis-cli", "ping"]
       interval: 30s
@@ -47,7 +49,7 @@ services:
       - mysql
     restart: on-failure
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://mysql:3306"]
+      test: ["CMD", "curl", "-f", "http://backend:5000/api/messages"]
       interval: 20s
       retries: 10
       start_period: 20s
@@ -57,13 +59,14 @@ services:
     build:
       context: ./frontend
     ports:
-      - "3000:3000"
+      - "80:80"
     networks:
       - mynt
     depends_on:
       - backend
+    restart: on-failure
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://backend:5000/api/messages"]
+      test: ["CMD", "curl", "-f", "http://localhost"]
       interval: 20s
       retries: 10
       start_period: 20s

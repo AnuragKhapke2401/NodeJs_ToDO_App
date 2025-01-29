@@ -12,7 +12,9 @@ FROM node:20.18.0-alpine AS runtime
 
 WORKDIR /app
 
-COPY --from=build /app .
+RUN apk add --no-cache curl
+
+COPY --from=build /app . 
 
 EXPOSE 5000
 
