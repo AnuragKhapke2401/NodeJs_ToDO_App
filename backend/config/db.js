@@ -3,14 +3,14 @@ const mysql = require('mysql2');
 const redis = require('redis');
 
 // Debugging logs to check environment variables
-console.log("ENV - REDIS_HOST:", process.env.REDIS_HOST);
-console.log("ENV - REDIS_PORT:", process.env.REDIS_PORT);
+console.log("ENV - REDIS_URL:", process.env.REDIS_URL);
 
-// Ensure REDIS_HOST does not contain "tcp://"
-const redisHost = process.env.REDIS_HOST.replace(/^tcp:\/\//, '');
-const redisPort = process.env.REDIS_PORT || '6379';
+// Ensure the REDIS_URL is correctly formatted
+let redisUrl = process.env.REDIS_URL;
+if (!redisUrl.startsWith('redis://')) {
+  redisUrl = `redis://${redisUrl}`;
+}
 
-const redisUrl = `redis://${redisHost}:${redisPort}`;
 console.log("Connecting to Redis at:", redisUrl);
 
 // MySQL Configuration
